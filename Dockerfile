@@ -2,20 +2,9 @@ FROM n8nio/n8n:latest
 
 USER root
 
-# Verify what package manager exists, then install
-RUN echo "Checking system..." && \
-    cat /etc/os-release && \
-    which apk || which apt-get || echo "NO PACKAGE MANAGER FOUND"
+RUN cat /etc/os-release > /tmp/osinfo.txt && cat /tmp/osinfo.txt
+RUN ls /sbin/apk /usr/bin/apt-get 2>&1 || true
+RUN which apk 2>&1 || echo "no apk"
+RUN which apt-get 2>&1 || echo "no apt-get"
 
-RUN apk add --no-cache ffmpeg python3 py3-pip openssh-server || \
-    (apt-get update && apt-get install -y ffmpeg python3 python3-pip openssh-server)
-
-RUN pip3 install --break-system-packages edge-tts || pip3 install edge-tts
-
-RUN mkdir -p /var/run/sshd
-RUN echo 'node:collapseiq2026' | chpasswd
-RUN ssh-keygen -A
-
-EXPOSE 22
-USER root
-ENTRYPOINT ["/bin/sh", "-c", "/usr/sbin/sshd & exec su node -c 'n8n start'"]
+USER node
