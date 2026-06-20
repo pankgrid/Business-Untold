@@ -20,3 +20,4 @@ ENV PATH="/usr/local/bin:${PATH}"
 ENV PYTHONPATH="/usr/lib/python3.12/site-packages"
 
 USER node
+ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
