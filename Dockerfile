@@ -11,8 +11,10 @@ RUN if command -v apt-get >/dev/null 2>&1; then \
         apk add --no-cache ffmpeg python3 py3-pip openssh; \
     fi
 
-# Install edge-tts
-RUN pip3 install edge-tts --break-system-packages 2>/dev/null || pip3 install edge-tts
+# Install edge-tts using python3 -m pip (more reliable)
+RUN python3 -m ensurepip --upgrade 2>/dev/null; \
+    python3 -m pip install --break-system-packages edge-tts 2>/dev/null || \
+    python3 -m pip install edge-tts
 
 # Setup SSH for node user
 RUN mkdir -p /var/run/sshd
